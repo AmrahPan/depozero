@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FixLine — Оборудование работает. Всегда.</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif; background: #080808; color: #fff; overflow-x: hidden; }
+
+/* NAV */
+nav { position: fixed; top: 0; width: 100%; z-index: 100; padding: 20px 48px; display: flex; justify-content: space-between; align-items: center; background: rgba(8,8,8,0.92); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+.logo { font-size: 15px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; }
+.nav-links { display: flex; gap: 32px; align-items: center; }
+.nav-links a { color: rgba(255,255,255,0.4); text-decoration: none; font-size: 12px; letter-spacing: 1px; transition: color 0.2s; }
+.nav-links a:hover { color: #fff; }
+.nav-cta { background: #fff !important; color: #000 !important; padding: 10px 24px; border-radius: 100px; font-weight: 700 !important; font-size: 11px !important; letter-spacing: 1.5px; text-transform: uppercase; }
+
+/* HERO */
+.hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 48px 80px; position: relative; overflow: hidden; }
+.hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px); background-size: 80px 80px; }
+.hero-glow { position: absolute; bottom: -200px; left: 50%; transform: translateX(-50%); width: 800px; height: 800px; background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%); pointer-events: none; }
+.hero-tag { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.25); margin-bottom: 28px; display: flex; align-items: center; gap: 12px; }
+.hero-tag::before { content: ''; width: 32px; height: 1px; background: rgba(255,255,255,0.2); }
+h1 { font-size: clamp(56px, 9vw, 120px); font-weight: 900; line-height: 0.92; letter-spacing: -4px; max-width: 900px; }
+h1 .dim { color: rgba(255,255,255,0.18); }
+.hero-bottom { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 56px; gap: 40px; }
+.hero-desc { font-size: 16px; color: rgba(255,255,255,0.38); line-height: 1.75; max-width: 400px; }
+.hero-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 16px; }
+.btn-primary { background: #fff; color: #000; padding: 16px 36px; border-radius: 100px; font-size: 12px; font-weight: 700; text-decoration: none; letter-spacing: 1.5px; text-transform: uppercase; transition: opacity 0.2s; border: none; cursor: pointer; }
+.btn-primary:hover { opacity: 0.85; }
+.btn-ghost { color: rgba(255,255,255,0.35); font-size: 12px; text-decoration: none; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+.btn-ghost:hover { color: #fff; }
+.scroll-hint { font-size: 11px; color: rgba(255,255,255,0.2); letter-spacing: 2px; text-transform: uppercase; }
+
+/* MARQUEE */
+.marquee-wrap { border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 16px 0; overflow: hidden; }
+.marquee { display: flex; gap: 60px; animation: scroll 22s linear infinite; white-space: nowrap; }
+.marquee span { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.18); }
+.marquee .dot { color: rgba(255,255,255,0.07); }
+@keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* SECTIONS */
+.section { padding: 112px 48px; border-top: 1px solid rgba(255,255,255,0.05); }
+.s-label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.22); margin-bottom: 56px; display: flex; align-items: center; gap: 14px; }
+.s-label::before { content: ''; width: 32px; height: 1px; background: rgba(255,255,255,0.15); }
+.s-h2 { font-size: clamp(28px, 4.5vw, 56px); font-weight: 900; letter-spacing: -2px; line-height: 1.05; margin-bottom: 72px; }
+
+/* PAIN */
+.pain-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.06); margin-bottom: 2px; }
+.pain-card { background: #080808; padding: 44px; transition: background 0.3s; }
+.pain-card:hover { background: rgba(255,255,255,0.02); }
+.pain-icon { width: 36px; height: 36px; margin-bottom: 20px; opacity: 0.6; }
+.pain-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+.pain-card p { font-size: 14px; color: rgba(255,255,255,0.38); line-height: 1.75; }
+.insight { background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.07); padding: 44px; }
+.insight p { font-size: 20px; color: rgba(255,255,255,0.55); line-height: 1.65; font-weight: 500; }
+.insight strong { color: #fff; }
+
+/* HOW */
+.how-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+.how-sticky { position: sticky; top: 120px; }
+.how-sticky h2 { font-size: clamp(28px, 4vw, 48px); font-weight: 900; letter-spacing: -2px; line-height: 1.1; margin-bottom: 24px; }
+.how-sticky p { font-size: 15px; color: rgba(255,255,255,0.38); line-height: 1.75; }
+.steps { display: flex; flex-direction: column; }
+.step { padding: 36px 0; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; gap: 28px; }
+.step-n { font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,0.2); min-width: 28px; margin-top: 3px; }
+.step-body h3 { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+.step-body p { font-size: 14px; color: rgba(255,255,255,0.38); line-height: 1.75; }
+
+/* TARIFFS */
+.tariff-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.06); }
+.tariff { background: #080808; padding: 44px; position: relative; overflow: hidden; transition: background 0.3s; }
+.tariff:hover { background: rgba(255,255,255,0.02); }
+.tariff.featured { background: rgba(255,255,255,0.04); }
+.tariff-badge { display: inline-block; padding: 4px 12px; border-radius: 100px; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 28px; }
+.tariff h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+.tariff-price { font-size: 40px; font-weight: 900; letter-spacing: -2px; margin-bottom: 4px; }
+.tariff-period { font-size: 13px; color: rgba(255,255,255,0.3); margin-bottom: 32px; }
+.tariff ul { list-style: none; margin-bottom: 36px; }
+.tariff ul li { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 10px; padding-left: 18px; position: relative; line-height: 1.6; }
+.tariff ul li::before { content: '→'; position: absolute; left: 0; color: rgba(255,255,255,0.2); }
+.tariff-cta { width: 100%; padding: 14px; border-radius: 8px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; border: none; cursor: pointer; transition: opacity 0.2s; }
+.tariff-cta:hover { opacity: 0.8; }
+
+/* AI ДИАГНОСТИКА */
+.ai-section { background: #080808; }
+.ai-inner { max-width: 800px; margin: 0 auto; }
+.ai-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border: 1px solid rgba(255,255,255,0.12); border-radius: 100px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 40px; }
+.ai-badge::before { content: ''; width: 6px; height: 6px; background: #4caf50; border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.ai-section h2 { font-size: clamp(28px, 4vw, 52px); font-weight: 900; letter-spacing: -2px; line-height: 1.1; margin-bottom: 16px; }
+.ai-section .ai-sub { font-size: 16px; color: rgba(255,255,255,0.38); margin-bottom: 48px; line-height: 1.7; }
+
+/* QUICK SYMPTOMS */
+.symptom-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.chip { padding: 8px 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 100px; font-size: 12px; color: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.2s; background: transparent; letter-spacing: 0.3px; }
+.chip:hover { border-color: rgba(255,255,255,0.3); color: #fff; }
+
+.ai-box { border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; overflow: hidden; }
+.ai-input-area { padding: 28px; background: rgba(255,255,255,0.03); }
+.equip-select { width: 100%; padding: 14px 18px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; color: rgba(255,255,255,0.6); font-size: 14px; font-family: inherit; outline: none; margin-bottom: 12px; -webkit-appearance: none; }
+.equip-select option { background: #1a1a1a; }
+.ai-textarea { width: 100%; padding: 18px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; color: #fff; font-size: 15px; font-family: inherit; outline: none; resize: none; min-height: 100px; line-height: 1.6; transition: border 0.2s; }
+.ai-textarea::placeholder { color: rgba(255,255,255,0.25); }
+.ai-textarea:focus { border-color: rgba(255,255,255,0.25); }
+.ai-footer { display: flex; justify-content: space-between; align-items: center; padding: 16px 28px; border-top: 1px solid rgba(255,255,255,0.06); }
+.ai-footer-note { font-size: 12px; color: rgba(255,255,255,0.2); }
+.ai-btn { background: #fff; color: #000; padding: 12px 28px; border-radius: 100px; font-size: 12px; font-weight: 700; border: none; cursor: pointer; letter-spacing: 1px; text-transform: uppercase; transition: opacity 0.2s; display: flex; align-items: center; gap: 8px; }
+.ai-btn:hover { opacity: 0.85; }
+.ai-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* RESULT */
+.ai-result { display: none; border-top: 1px solid rgba(255,255,255,0.06); padding: 28px; background: rgba(255,255,255,0.02); }
+.result-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+.result-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; }
+.result-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+.result-text { font-size: 15px; color: rgba(255,255,255,0.8); line-height: 1.8; white-space: pre-wrap; }
+.result-cta { margin-top: 28px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; }
+.result-cta p { font-size: 14px; color: rgba(255,255,255,0.4); }
+
+/* LOADING */
+.typing { display: inline-flex; gap: 4px; align-items: center; }
+.typing span { width: 6px; height: 6px; background: rgba(255,255,255,0.4); border-radius: 50%; animation: typing 1.2s infinite; }
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+/* STATS */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.06); }
+.stat { background: #080808; padding: 44px 36px; }
+.stat-num { font-size: clamp(36px, 4vw, 56px); font-weight: 900; letter-spacing: -2px; }
+.stat p { font-size: 13px; color: rgba(255,255,255,0.35); margin-top: 12px; line-height: 1.6; }
+
+/* FORM */
+.form-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+.form-left h2 { font-size: clamp(28px, 4vw, 48px); font-weight: 900; letter-spacing: -2px; line-height: 1.1; margin-bottom: 20px; }
+.form-left p { font-size: 15px; color: rgba(255,255,255,0.38); line-height: 1.75; }
+.form { display: flex; flex-direction: column; gap: 12px; }
+.form input, .form select { width: 100%; padding: 16px 18px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; font-size: 14px; color: #fff; font-family: inherit; outline: none; transition: border 0.2s; -webkit-appearance: none; }
+.form select { color: rgba(255,255,255,0.5); }
+.form select option { background: #1a1a1a; color: #fff; }
+.form input::placeholder { color: rgba(255,255,255,0.25); }
+.form input:focus, .form select:focus { border-color: rgba(255,255,255,0.2); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-submit { background: #fff; color: #000; padding: 16px; border-radius: 10px; font-size: 12px; font-weight: 700; border: none; cursor: pointer; letter-spacing: 1.5px; text-transform: uppercase; transition: opacity 0.2s; margin-top: 4px; }
+.form-submit:hover { opacity: 0.85; }
+.form-note { font-size: 11px; color: rgba(255,255,255,0.18); text-align: center; }
+.success-msg { display: none; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 40px; text-align: center; }
+.success-msg h3 { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
+.success-msg p { color: rgba(255,255,255,0.4); font-size: 14px; }
+
+/* FOOTER */
+footer { border-top: 1px solid rgba(255,255,255,0.05); padding: 36px 48px; display: flex; justify-content: space-between; align-items: center; }
+footer p { font-size: 12px; color: rgba(255,255,255,0.2); }
+
+@media (max-width: 768px) {
+  nav { padding: 16px 20px; }
+  .nav-links a:not(.nav-cta) { display: none; }
+  .hero, .section { padding-left: 20px; padding-right: 20px; }
+  h1 { letter-spacing: -2px; }
+  .hero-bottom { flex-direction: column; align-items: flex-start; }
+  .hero-actions { align-items: flex-start; }
+  .pain-grid, .tariff-grid, .stats-grid { grid-template-columns: 1fr; }
+  .how-grid, .form-inner { grid-template-columns: 1fr; gap: 40px; }
+  .how-sticky { position: static; }
+  .form-row { grid-template-columns: 1fr; }
+  footer { flex-direction: column; gap: 10px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">FixLine</div>
+  <div class="nav-links">
+    <a href="#how">Как работает</a>
+    <a href="#tariffs">Тарифы</a>
+    <a href="#ai">AI диагностика</a>
+    <a href="#form" class="nav-cta">Заявка</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="border-top:none; padding-top:0;">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-tag">Сервис нового поколения для общепита</div>
+  <h1>Оборудование<br><span class="dim">которое</span><br>не ломается.</h1>
+  <div class="hero-bottom">
+    <p class="hero-desc">Фиксированная подписка вместо непредсказуемых счётов. Предиктивное обслуживание на базе AI. Мы предотвращаем поломки до того как они останавливают вашу кухню.</p>
+    <div class="hero-actions">
+      <a href="#form" class="btn-primary">Оставить заявку</a>
+      <a href="#ai" class="btn-ghost">Попробовать AI диагностику →</a>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee">
+    <span>Предиктивное обслуживание</span><span class="dot">·</span>
+    <span>Фиксированная подписка</span><span class="dot">·</span>
+    <span>AI диагностика</span><span class="dot">·</span>
+    <span>Без простоев</span><span class="dot">·</span>
+    <span>Выезд 7 дней в неделю</span><span class="dot">·</span>
+    <span>Предсказуемый бюджет</span><span class="dot">·</span>
+    <span>Предиктивное обслуживание</span><span class="dot">·</span>
+    <span>Фиксированная подписка</span><span class="dot">·</span>
+    <span>AI диагностика</span><span class="dot">·</span>
+    <span>Без простоев</span><span class="dot">·</span>
+    <span>Выезд 7 дней в неделю</span><span class="dot">·</span>
+    <span>Предсказуемый бюджет</span><span class="dot">·</span>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section class="section" id="problem">
+  <div class="s-label">Проблема</div>
+  <h2 class="s-h2">Поломка всегда<br>не вовремя.</h2>
+  <div class="pain-grid">
+    <div class="pain-card">
+      <svg class="pain-icon" viewBox="0 0 36 36" fill="none">
+        <circle cx="18" cy="18" r="17" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+        <path d="M18 10v8l5 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <h3>Мастер едет сутками</h3>
+      <p>Звонишь по объявлению, ждёшь, доплачиваешь за срочность. Кухня стоит — выручка теряется каждый час простоя.</p>
+    </div>
+    <div class="pain-card">
+      <svg class="pain-icon" viewBox="0 0 36 36" fill="none">
+        <path d="M6 30L12 18l6 6 6-10 6 6" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="30" cy="8" r="4" stroke="#fff" stroke-width="1.5"/>
+        <path d="M30 6v4M28 8h4" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      <h3>Счета непредсказуемы</h3>
+      <p>Месяц тишина, потом внезапно 100 тысяч за компрессор. Планировать бюджет невозможно — постоянный стресс.</p>
+    </div>
+    <div class="pain-card">
+      <svg class="pain-icon" viewBox="0 0 36 36" fill="none">
+        <rect x="6" y="10" width="24" height="16" rx="2" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+        <path d="M14 18h8M18 14v8" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <h3>Простой = потеря выручки</h3>
+      <p>Фритюрница встала в пятницу вечером — потерял выходные. Потери от простоя часто дороже самого ремонта.</p>
+    </div>
+    <div class="pain-card">
+      <svg class="pain-icon" viewBox="0 0 36 36" fill="none">
+        <circle cx="18" cy="14" r="6" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+        <path d="M8 30c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <h3>Некому доверять</h3>
+      <p>Мастера зарабатывают на поломках — им невыгодно чтобы у вас всё работало. Конфликт интересов встроен в модель.</p>
+    </div>
+  </div>
+  <div class="insight" style="margin-top:2px;">
+    <p>Традиционный сервис — как врач которому выгодно чтобы вы болели. <strong>FixLine переворачивает это</strong> — мы зарабатываем когда оборудование работает, а не когда ломается.</p>
+  </div>
+</section>
+
+<!-- HOW -->
+<section class="section" id="how">
+  <div class="how-grid">
+    <div class="how-sticky">
+      <div class="s-label">Как работает</div>
+      <h2>Подписка.<br>Не ремонт.</h2>
+      <p style="margin-top:20px;">Один платёж в месяц покрывает всё. Мы берём на себя полную ответственность за оборудование — вы занимаетесь едой и гостями.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">01</div>
+        <div class="step-body">
+          <h3>Аудит и подключение</h3>
+          <p>Приезжаем, фиксируем каждую единицу оборудования, её состояние и историю. Составляем индивидуальный план обслуживания. Подключение занимает один день.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">02</div>
+        <div class="step-body">
+          <h3>Фиксированная подписка</h3>
+          <p>Одна сумма в месяц — плановое ТО, запчасти, ремонты, выезды мастеров. Никаких дополнительных счётов. Бюджет предсказуем на год вперёд.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">03</div>
+        <div class="step-body">
+          <h3>AI предотвращает поломки</h3>
+          <p>Наша платформа анализирует данные и предсказывает когда что сломается. Мастер приезжает и меняет деталь до отказа — 90% поломок предотвращается на этом этапе.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">04</div>
+        <div class="step-body">
+          <h3>Если сломалось — наша задача</h3>
+          <p>Ремонт входит в подписку. Мастер приедет приоритетно 7 дней в неделю. Ваша задача — готовить. Наша — чтобы всё работало.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TARIFFS -->
+<section class="section" id="tariffs">
+  <div class="s-label">Тарифы</div>
+  <h2 class="s-h2">Три варианта.<br>Один принцип.</h2>
+  <div class="tariff-grid">
+    <div class="tariff">
+      <div class="tariff-badge" style="background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.5);">Базовый</div>
+      <h3>Профилактика</h3>
+      <div class="tariff-price">3–4K</div>
+      <div class="tariff-period">рублей в месяц за заведение</div>
+      <ul>
+        <li>Плановое ТО по расписанию</li>
+        <li>Чистки и регулировки</li>
+        <li>Замена расходников</li>
+        <li>Ремонт со скидкой 20%</li>
+        <li>Приоритетный выезд</li>
+      </ul>
+      <button class="tariff-cta" style="background:rgba(255,255,255,0.06); color:#fff;" onclick="scrollToForm()">Выбрать →</button>
+    </div>
+    <div class="tariff featured">
+      <div class="tariff-badge" style="background:rgba(255,255,255,0.12); color:#fff;">Популярный</div>
+      <h3>Защита</h3>
+      <div class="tariff-price">6–8K</div>
+      <div class="tariff-period">рублей в месяц за заведение</div>
+      <ul>
+        <li>Всё из Базового</li>
+        <li>Все ремонты включены</li>
+        <li>Запчасти до 15 тыс/мес</li>
+        <li>Выезд 7 дней в неделю</li>
+        <li>Личный кабинет с историей</li>
+      </ul>
+      <button class="tariff-cta" style="background:#fff; color:#000;" onclick="scrollToForm()">Выбрать →</button>
+    </div>
+    <div class="tariff">
+      <div class="tariff-badge" style="background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.5);">Максимум</div>
+      <h3>Гарантия</h3>
+      <div class="tariff-price">12–15K</div>
+      <div class="tariff-period">рублей в месяц за заведение</div>
+      <ul>
+        <li>Всё включено без ограничений</li>
+        <li>IoT мониторинг в реальном времени</li>
+        <li>AI предиктивная аналитика</li>
+        <li>Выезд за 2 часа</li>
+        <li>Персональный менеджер</li>
+      </ul>
+      <button class="tariff-cta" style="background:rgba(255,255,255,0.06); color:#fff;" onclick="scrollToForm()">Выбрать →</button>
+    </div>
+  </div>
+</section>
+
+<!-- AI ДИАГНОСТИКА -->
+<section class="section ai-section" id="ai">
+  <div class="ai-inner">
+    <div class="ai-badge">AI онлайн</div>
+    <h2>Опишите симптом.<br>Получите диагноз.</h2>
+    <p class="ai-sub">Наш AI обучен на тысячах случаев ремонта ресторанного оборудования. Опишите что происходит — и получите предварительный диагноз и рекомендации прямо сейчас.</p>
+
+    <div class="symptom-chips">
+      <button class="chip" onclick="setSymptom('Холодильник перестал охлаждать, шумит компрессор')">Холодильник не охлаждает</button>
+      <button class="chip" onclick="setSymptom('Пароконвектомат выдаёт ошибку E1, не нагревается')">Ошибка пароконвектомата</button>
+      <button class="chip" onclick="setSymptom('Фритюрница не держит температуру, масло не разогревается до нужной')">Фритюрница не греет</button>
+      <button class="chip" onclick="setSymptom('Посудомойка не набирает воду, слышен щелчок но насос не работает')">Посудомойка не работает</button>
+      <button class="chip" onclick="setSymptom('Кофемашина не делает пар, давление упало')">Кофемашина без пара</button>
+    </div>
+
+    <div class="ai-box">
+      <div class="ai-input-area">
+        <select class="equip-select" id="equipSelect">
+          <option value="">Выберите оборудование (необязательно)</option>
+          <option>Холодильник / холодильный шкаф</option>
+          <option>Пароконвектомат</option>
+          <option>Фритюрница</option>
+          <option>Плита / духовой шкаф</option>
+          <option>Посудомоечная машина</option>
+          <option>Кофемашина</option>
+          <option>Миксер / тестомес</option>
+          <option>Льдогенератор</option>
+          <option>Другое</option>
+        </select>
+        <textarea class="ai-textarea" id="symptomInput" placeholder="Опишите симптом поломки... Например: холодильник перестал охлаждать, слышен странный шум, температура поднялась до +12°C" rows="4"></textarea>
+      </div>
+      <div class="ai-footer">
+        <span class="ai-footer-note">Бесплатно · Без регистрации</span>
+        <button class="ai-btn" id="diagBtn" onclick="runDiagnostic()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M7 4v3l2 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Диагностировать
+        </button>
+      </div>
+      <div class="ai-result" id="aiResult">
+        <div class="result-header">
+          <div class="result-dot"></div>
+          <div class="result-label">AI Диагноз FixLine</div>
+        </div>
+        <div class="result-text" id="resultText"></div>
+        <div class="result-cta">
+          <p>Хотите чтобы мастер приехал сегодня?</p>
+          <button class="btn-primary" onclick="scrollToForm()">Оставить заявку</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="section">
+  <div class="s-label">Результат</div>
+  <div class="stats-grid">
+    <div class="stat">
+      <div class="stat-num">−30%</div>
+      <p>экономия на обслуживании оборудования в год по сравнению с реактивным ремонтом</p>
+    </div>
+    <div class="stat">
+      <div class="stat-num">90%</div>
+      <p>поломок предотвращается до остановки кухни благодаря предиктивному обслуживанию</p>
+    </div>
+    <div class="stat">
+      <div class="stat-num">100%</div>
+      <p>предсказуемый бюджет на обслуживание — никаких внезапных счётов</p>
+    </div>
+    <div class="stat">
+      <div class="stat-num">7/7</div>
+      <p>дней в неделю приоритетный выезд мастера для клиентов на подписке</p>
+    </div>
+  </div>
+</section>
+
+<!-- FORM -->
+<section class="section" id="form">
+  <div class="form-inner">
+    <div class="form-left">
+      <div class="s-label">Начать</div>
+      <h2>Рассчитаем стоимость для вашего заведения.</h2>
+      <p style="margin-top:16px;">Свяжемся в течение часа. Расскажем как работает сервис и сколько вы сэкономите в год.</p>
+    </div>
+    <div>
+      <div class="form" id="contactForm">
+        <div class="form-row">
+          <input type="text" id="fname" placeholder="Ваше имя" />
+          <input type="tel" id="fphone" placeholder="Телефон" />
+        </div>
+        <input type="text" id="frest" placeholder="Название заведения" />
+        <select id="ftype">
+          <option value="" disabled selected>Тип заведения</option>
+          <option>Ресторан</option>
+          <option>Кафе</option>
+          <option>Кофейня</option>
+          <option>Сеть заведений</option>
+          <option>Фастфуд / столовая</option>
+          <option>Другое</option>
+        </select>
+        <select id="funits">
+          <option value="" disabled selected>Количество единиц оборудования</option>
+          <option>1–5</option>
+          <option>6–10</option>
+          <option>11–20</option>
+          <option>Больше 20</option>
+        </select>
+        <select id="ftariff">
+          <option value="" disabled selected>Интересующий тариф</option>
+          <option>Базовый — 3–4 тыс/мес</option>
+          <option>Защита — 6–8 тыс/мес</option>
+          <option>Гарантия — 12–15 тыс/мес</option>
+          <option>Помогите выбрать</option>
+        </select>
+        <button class="form-submit" onclick="submitForm()">Получить расчёт →</button>
+        <p class="form-note">Нажимая кнопку, вы соглашаетесь на обработку персональных данных</p>
+      </div>
+      <div class="success-msg" id="successMsg">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" style="margin:0 auto 20px;display:block;">
+          <circle cx="24" cy="24" r="23" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <path d="M14 24l7 7 13-14" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3>Заявка принята</h3>
+        <p>Свяжемся в течение часа для расчёта стоимости подписки для вашего заведения.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="logo">FixLine</div>
+  <p>© 2026 FixLine. Оборудование работает. Всегда.</p>
+</footer>
+
+<script>
+function setSymptom(text) {
+  document.getElementById('symptomInput').value = text;
+  document.getElementById('symptomInput').focus();
+}
+
+function scrollToForm() {
+  document.getElementById('form').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function runDiagnostic() {
+  const symptom = document.getElementById('symptomInput').value.trim();
+  const equip = document.getElementById('equipSelect').value;
+  if (!symptom) { document.getElementById('symptomInput').focus(); return; }
+
+  const btn = document.getElementById('diagBtn');
+  const result = document.getElementById('aiResult');
+  const resultText = document.getElementById('resultText');
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  result.style.display = 'block';
+  resultText.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+
+  const equipStr = equip ? `Оборудование: ${equip}. ` : '';
+  const prompt = `Ты — AI-диагност ресторанного оборудования компании FixLine. 
+
+${equipStr}Симптом: ${symptom}
+
+Дай профессиональный диагноз в таком формате:
+1. Вероятная причина (1-2 предложения, конкретно)
+2. Степень срочности: Критично / Высокая / Средняя / Низкая — и почему
+3. Что будет если не починить сейчас (1 предложение)
+4. Предварительная стоимость ремонта при реактивном подходе (диапазон в рублях)
+5. Как FixLine решает это в рамках подписки (1-2 предложения)
+
+Отвечай по-русски, профессионально но понятно. Без markdown символов вроде ** или ##. Используй цифры для нумерации.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || 'Не удалось получить диагноз. Попробуйте ещё раз.';
+    resultText.textContent = text;
+  } catch(e) {
+    resultText.textContent = 'Ошибка соединения. Пожалуйста, попробуйте ещё раз или свяжитесь с нами напрямую.';
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M7 4v3l2 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Диагностировать снова';
+}
+
+function submitForm() {
+  const name = document.getElementById('fname').value.trim();
+  const phone = document.getElementById('fphone').value.trim();
+  if (!name || !phone) { alert('Пожалуйста, заполните имя и телефон'); return; }
+  document.getElementById('contactForm').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'block';
+  document.getElementById('successMsg').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const el = document.querySelector(a.getAttribute('href'));
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// Fade in animation
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.pain-card, .step, .tariff, .stat').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(16px)';
+  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  obs.observe(el);
+});
+</script>
+</body>
+</html>
